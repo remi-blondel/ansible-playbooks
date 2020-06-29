@@ -1,0 +1,16 @@
+---
+
+- name: "Include vars"
+  include_vars: main.yml
+
+- name: "Test connection from DC1 to DC2"
+  shell: ping -c 3 "{{ remote_dc2_host }}"
+  register: ping_output_dc1
+  when:  ansible_default_ipv4.address in groups['datacenter1']
+  failed_when: ping_output_dc1.stdout_lines is search("100% packet loss")
+
+- name: "Test connection from DC2 to DC1"
+  shell: ping -c 3 "{{ remote_dc1_host }}"
+  register: ping_output_dc2
+  when:  ansible_default_ipv4.address in groups['datacenter2']
+  failed_when: ping_output_dc2.stdout_lines is search("100% packet loss")
