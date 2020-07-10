@@ -1,0 +1,6 @@
+{% for interface in interfaces %}
+DEVICE={{ interface.device }}
+ONBOOT={{ interface.onboot }}
+IPADDR={{ interface.ipaddr }}
+PREFIX={{ interface.prefix }}
+{% endfor %} 

@@ -1,0 +1,7 @@
+- name: ssh clients from bastion
+  hosts:
+    - client2
+    - client3
+
+  roles:
+    - ssh-clients-from-bastion

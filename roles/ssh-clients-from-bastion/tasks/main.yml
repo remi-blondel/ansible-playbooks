@@ -1,0 +1,6 @@
+---
+# tasks file for ssh-clients-from-bastion
+
+- name: Dummy task to confirm ssh from bastion
+  debug:
+    msg: "{{ ansible_hostname }}"

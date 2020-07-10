@@ -1,0 +1,10 @@
+- name: Checking routers network configuration
+  hosts:
+    - router1
+    - router2
+    - router3
+
+  gather_facts: yes
+
+  roles:
+    - check-net-config

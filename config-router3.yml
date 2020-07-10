@@ -1,0 +1,7 @@
+- name: Configure router3
+  hosts:
+    - router3
+  gather_facts: no
+
+  roles:
+    - config-router3

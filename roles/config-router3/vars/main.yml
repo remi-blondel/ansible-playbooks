@@ -1,0 +1,23 @@
+---
+
+interfaces:
+  - enp0s3:
+    device: enp0s3
+    onboot: yes
+    ipaddr: 172.16.1.254
+    prefix: 24
+
+routes:
+  - enp0s8:
+    device: enp0s8
+    route_list:
+      - 10.0.1.0/24 via 192.168.1.171 dev enp0s8
+      - 10.0.2.0/24 via 192.168.1.14 dev enp0s8
+
+dnat_rules:
+  - client1:
+    prenat: 10.0.3.1
+    postnat: 172.16.1.1
+  - client2:
+    prenat: 10.0.3.2
+    postnat: 172.16.1.2

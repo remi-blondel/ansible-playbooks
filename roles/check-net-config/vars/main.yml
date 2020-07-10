@@ -1,0 +1,53 @@
+---
+# vars file for check-net-config
+
+router1:
+  - enp0s3:
+    address: 172.16.1.254 
+    broadcast: 172.16.1.255 
+    netmask: 255.255.255.0
+    network: 172.16.1.0
+  - enp0s8:
+    address: 192.168.1.171
+    broadcast: 192.168.255.255
+    netmask: 255.255.0.0
+    network: 192.168.1.
+  - lo:
+    address: 127.0.0.1
+    broadcast: host
+    netmask: 255.0.0.0
+    network: 127.0.0.0
+
+router2:
+  - enp0s3:
+    address: 172.16.1.254
+    broadcast: 172.16.1.255
+    netmask: 255.255.255.0
+    network: 172.16.1.0
+  - enp0s8:
+    address: 192.168.1.14
+    broadcast: 192.168.255.255
+    netmask: 255.255.0.0
+    network: 192.168.1.0
+  - lo:
+    address: 127.0.0.1
+    broadcast: host
+    netmask: 255.0.0.0
+    network: 127.0.0.0
+
+router3:
+  - enp0s3:
+    address: 172.16.1.254
+    broadcast: 172.16.1.255
+    netmask: 255.255.255.0
+    network: 172.16.1.0
+  - enp0s8:
+    address: 192.168.1.15
+    broadcast: 192.168.255.255
+    netmask: 255.255.0.0
+    network: 192.168.1.0
+  - lo:
+    address: 127.0.0.1
+    broadcast: host
+    netmask: 255.0.0.0
+    network: 127.0.0.0

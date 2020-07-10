@@ -1,0 +1,40 @@
+---
+# tasks file for config-router3
+
+- name: "Include vars"
+  include_vars: main.yml
+
+- name: Templating interface configuration file
+  template:
+    src: ifcfg.j2
+    dest: /etc/sysconfig/network-scripts/ifcfg-{{ item.device }}
+  with_items: "{{ interfaces }}"
+  register: updated_device
+  notify:
+    - ip ifdown-ifup
+
+- name: Templating routes configuration file
+  template:
+    src: route.j2
+    dest: /etc/sysconfig/network-scripts/route-{{ item.device }}
+  with_items: "{{ routes }}"
+  register: device
+  notify:
+    - route ifdown-ifup
+
+- name: Configure masquerading
+  iptables:
+    table: nat
+    chain: POSTROUTING
+    out_interface: enp0s8
+    jump: MASQUERADE
+
+- name: Configure DNAT
+  iptables:
+    table: nat
+    chain: PREROUTING
+    in_interface: enp0s8
+    destination: "{{ item.prenat }}"
+    jump: DNAT
+    to_destination: "{{ item.postnat }}"
+  with_items: "{{ dnat_rules }}"
