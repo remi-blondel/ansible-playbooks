@@ -1,0 +1,37 @@
+---
+# tasks file for check-net-config
+
+- name: Including router config variables
+  include_vars: main.yml
+
+- name: Assigning the right router config to a generic var
+  set_fact:
+    router_if_desired: "{{ updated_key_item }}"
+  vars:
+    updated_key_item: "{{ item.value }}"
+  with_dict: "{{ router_configs }}"
+  when: "item.key is in ansible_nodename"
+
+- name: Retrieving interfaces configuration
+  set_fact:
+    "{{ item }}={{ hostvars[inventory_hostname]['ansible_%s' | format(item)]['ipv4'] }}"
+  with_items: "{{ ansible_interfaces }}"
+  register: interfaces
+
+- name: Building interfaces list
+  set_fact:
+    router_if_current: "{{ interfaces.results | map(attribute='ansible_facts') | list }}"
+
+- name: debug desired
+  debug:
+    msg: "{{ router_if_desired }}"
+
+- name: debug current
+  debug:
+    msg: "{{ router_if_current }}"
+
+- name: Comparing required interface configuration with current one
+  debug:
+    msg: "{{ router_if_current | difference(router_if_desired) | list }}"
+  failed_when: "router_if_current | difference(router_if_desired) | list | length != 0"
+

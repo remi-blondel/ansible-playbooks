@@ -1,16 +1,6 @@
 ---
-# tasks file for check-net-config
+#- name: Include tasks checking interface configuration
+#  include: "interfaces.yml"
 
-- name: Getting router ip interfaces config
-  set_fact:
-    "{{ item }}: {{ hostvars[inventory_hostname]['ansible_%s' | format(item)]['ipv4'] }}"
-  with_items: "{{ ansible_interfaces }}"
-  register: interface
-
-- name: Building interfaces list
-  set_fact:
-    interfaces: "{{ interface.results | map(attribute='ansible_facts._raw_params') | list }}"
-
-- name: debug
-  debug:
-    msg: "{{ interfaces }}"
+- name: Include tasks checking route configuration
+  include: "routes.yml"
