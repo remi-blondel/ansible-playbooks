@@ -2,7 +2,7 @@
 # tasks file for check-net-config
 
 - name: Including router config variables
-  include_vars: main.yml
+  include_vars: interfaces_vars.yml
 
 - name: Assigning the right router config to a generic var
   set_fact:
@@ -22,16 +22,8 @@
   set_fact:
     router_if_current: "{{ interfaces.results | map(attribute='ansible_facts') | list }}"
 
-- name: debug desired
-  debug:
-    msg: "{{ router_if_desired }}"
-
-- name: debug current
-  debug:
-    msg: "{{ router_if_current }}"
-
 - name: Comparing required interface configuration with current one
   debug:
-    msg: "{{ router_if_current | difference(router_if_desired) | list }}"
+    msg: "Interfaces configuration mismatche(s): {{ router_if_current | difference(router_if_desired) | list }}"
   failed_when: "router_if_current | difference(router_if_desired) | list | length != 0"
 

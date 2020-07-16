@@ -1,3 +1,39 @@
 ---
 
-- name: 
+- name: Include route variables
+  include_vars: routes_vars.yml
+
+- name: Assigning the right router config to a generic var
+  set_fact:
+    desired_routes: "{{ updated_key_item }}"
+  vars:
+    updated_key_item: "{{ item.value }}"
+  with_dict: "{{ routers_desired_routes }}"
+  when: "item.key is in ansible_nodename"
+
+- name: Getting routes with a shell command
+  shell: ip route
+  register: routes
+
+- name: Parse routes configuration
+  set_fact:
+    current_routes: "{{ routes.stdout | parse_cli(role_path + '/templates/routes_parser.yml') }}"
+  when: routes.stdout_lines is defined
+
+- name: convert routes dict to list
+  set_fact:
+    current_routes: "{{ item.value }}"
+  with_items: "{{ current_routes | dict2items }}"
+
+- name: Debug
+  debug:
+    msg: "{{ current_routes }}"
+
+- name: Debug2
+  debug:
+    msg: "{{ desired_routes }}"
+
+- name: Comparing required route configuration with current one
+  debug:
+    msg: "Route(s) configuration mismatche(s): {{ current_routes | difference(desired_routes) | list }}"
+  failed_when: "current_routes | difference(desired_routes) | list | length != 0"
