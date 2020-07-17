@@ -1,38 +1,44 @@
-Role Name
+ssh-clients-from-bastion
 =========
 
-A brief description of the role goes here.
+This role does not contain much tasks, but is used to test an ssh/ansible configuration using a host as bastion to proxy the ssh connection.
+This is done through ssh multiplexing.
 
-Requirements
-------------
+More info here: https://blog.scottlowe.org/2015/12/24/running-ansible-through-ssh-bastion-host/
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
-
-Role Variables
+Network Diagram
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+![alt text](https://raw.githubusercontent.com/remi-blondel/ansible-playbooks/master/roles/check-net-config/network_diagram.png)
 
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
-
-Example Playbook
+SSH Configuration:
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```bash
+Host 10.0.2.1
+  ProxyCommand ssh -W %h:%p 172.16.1.1
+  IdentityFile ~/.ssh/id_rsa_client1
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+Host 10.0.3.1
+  ProxyCommand ssh -W %h:%p 172.16.1.1
+  IdentityFile ~/.ssh/id_rsa_client1
 
-License
--------
+Host 172.16.1.1
+  Hostname 172.16.1.1
+  User root
+  IdentityFile ~/.ssh/id_rsa
+  ControlMaster auto
+  ControlPath ~/.ssh/ansible-%r@%h:%p
+  ControlPersist 5m
+```
+*located in `~/.ssh/ssh.cfg`
 
-BSD
+Ansible Configuration:
+----------------
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+```bash
+[ssh_connection]
+ssh_args = -F /root/.ssh/ssh.cfg -o ControlMaster=auto -o ControlPersist=30m
+control_path = ~/.ssh/ansible-%%r@%%h:%%p
+```
+* located in `/etc/ansible/ansible.cfg`
