@@ -1,7 +1,0 @@
-- name: Check communication between datacenters
-  hosts:
-     - datacenter1
-     - datacenter2
-  gather_facts: yes
-  roles:
-     - orange-dc-nat-validation

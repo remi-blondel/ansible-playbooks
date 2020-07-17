@@ -1,5 +1,0 @@
----
-# vars file for orange-dc-nat-validation
-
-remote_dc1_host: 10.1.1.1
-remote_dc2_host: 10.2.2.1
