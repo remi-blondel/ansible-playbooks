@@ -19,9 +19,14 @@
     current_nat: "{{ iptables.stdout_lines }}"
 
 - name: Compare current nat config with desired one
+  set_fact:
+    nat_compare: "{{ current_nat | difference(desired_nat) | list }}"
+
+- name: Printing configuration mismatche(s)
   debug:
     msg: 
       - "Nat configuration mismatche(s)."
       - "Current: {{ current_nat | difference(desired_nat) | list }}"
       - "Desired: {{ desired_nat | difference(current_nat) | list }}"
-  failed_when: "current_nat | difference(desired_nat) | list | length != 0"
+  when: "nat_compare | length != 0"
+  failed_when: "nat_compare | length != 0"

@@ -25,18 +25,15 @@
     current_routes: "{{ item.value }}"
   with_items: "{{ current_routes | dict2items }}"
 
-- name: Debug
-  debug:
-    msg: "{{ current_routes }}"
-
-- name: Debug2
-  debug:
-    msg: "{{ desired_routes }}"
-
 - name: Comparing required route configuration with current one
+  set_fact:
+    route_compare: "{{ current_routes | difference(desired_routes) | list }}"
+
+- name: Printing configuration mismatche(s)
   debug:
     msg: 
       - "Route(s) configuration mismatche(s):"
       - "Current: {{ current_routes | difference(desired_routes) | list }}"
       - "Desired: {{ desired_routes | difference(current_routes) | list }}"
-  failed_when: "current_routes | difference(desired_routes) | list | length != 0"
+  when: "route_compare | length != 0"
+  failed_when: "route_compare | length != 0"

@@ -25,7 +25,6 @@
 - name: Comparing required interface configuration with current one
   set_fact:
     if_compare: "{{ router_if_current | difference(router_if_desired) | list }}"
-    # failed_when: "router_if_current | difference(router_if_desired) | list | length != 0"
 
 - name: Printing configuration mismatche(s)
   debug:
