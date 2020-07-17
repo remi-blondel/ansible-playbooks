@@ -4,7 +4,7 @@
 router_configs:
   router1:
     - enp0s3:
-        address: 172.16.1.254 
+        address: 172.16.1.254
         broadcast: 172.16.1.255 
         netmask: 255.255.255.0
         network: 172.16.1.0
@@ -12,7 +12,7 @@ router_configs:
         address: 192.168.1.171
         broadcast: 192.168.255.255
         netmask: 255.255.0.0
-        network: 192.168.1.0
+        network: 192.168.0.0
     - lo:
         address: 127.0.0.1
         broadcast: host

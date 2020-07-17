@@ -1,0 +1,27 @@
+---
+- name: Include nat variables
+  include_vars: nat_vars.yml
+
+- name: Assigning the right router config to a generic var
+  set_fact:
+    desired_nat: "{{ updated_key_item }}"
+  vars:
+    updated_key_item: "{{ item.value }}"
+  with_dict: "{{ routers_desired_nat }}"
+  when: "item.key is in ansible_nodename"
+
+- name: Retrieve 
+  shell: iptables-save | grep -v -e "^[*:#]" -e "COMMIT"
+  register: iptables
+
+- name: Setting current_nat variable
+  set_fact:
+    current_nat: "{{ iptables.stdout_lines }}"
+
+- name: Compare current nat config with desired one
+  debug:
+    msg: 
+      - "Nat configuration mismatche(s)."
+      - "Current: {{ current_nat | difference(desired_nat) | list }}"
+      - "Desired: {{ desired_nat | difference(current_nat) | list }}"
+  failed_when: "current_nat | difference(desired_nat) | list | length != 0"

@@ -1,0 +1,8 @@
+---
+routers_desired_nat:
+  router1:
+  - -A PREROUTING -d 10.0.1.1/32 -i enp0s8 -j DNAT --to-destination 172.16.1.1
+  - -A POSTROUTING -o enp0s8 -j MASQUERADE
+  router2:
+  - -A PREROUTING -d 10.0.2.1/32 -i enp0s8 -j DNAT --to-destination 172.16.1.1
+  - -A POSTROUTING -o enp0s8 -j MASQUERADE

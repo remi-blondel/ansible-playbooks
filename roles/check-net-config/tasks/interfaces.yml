@@ -23,7 +23,15 @@
     router_if_current: "{{ interfaces.results | map(attribute='ansible_facts') | list }}"
 
 - name: Comparing required interface configuration with current one
-  debug:
-    msg: "Interfaces configuration mismatche(s): {{ router_if_current | difference(router_if_desired) | list }}"
-  failed_when: "router_if_current | difference(router_if_desired) | list | length != 0"
+  set_fact:
+    if_compare: "{{ router_if_current | difference(router_if_desired) | list }}"
+    # failed_when: "router_if_current | difference(router_if_desired) | list | length != 0"
 
+- name: Printing configuration mismatche(s)
+  debug:
+    msg:
+      - "Interfaces configuration mismatche(s):"
+      - "Current: {{ router_if_current | difference(router_if_desired) | list }}"
+      - "Desired: {{ router_if_desired | difference(router_if_current) | list }}"
+  when: "if_compare | length != 0"
+  failed_when: "if_compare | length != 0"

@@ -35,5 +35,8 @@
 
 - name: Comparing required route configuration with current one
   debug:
-    msg: "Route(s) configuration mismatche(s): {{ current_routes | difference(desired_routes) | list }}"
+    msg: 
+      - "Route(s) configuration mismatche(s):"
+      - "Current: {{ current_routes | difference(desired_routes) | list }}"
+      - "Desired: {{ desired_routes | difference(current_routes) | list }}"
   failed_when: "current_routes | difference(desired_routes) | list | length != 0"
